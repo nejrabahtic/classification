@@ -6,7 +6,6 @@ import operator
 classifier = []
 
 def create_dictionary():
-	"""Creating dictionary with group names as a keys and lists of keywords as a values"""
 	dictionary = {
 		"asyncwait" : ["async", "await", "wait", "delay", "flaky", "flakiness"],
 		"concurreny" : ["concurrency", "flakiness", "flaky", "parallel", "execution"],
@@ -17,7 +16,6 @@ def create_dictionary():
 
 
 def results_container(dictionary):
-	"""List of results for every key"""
 	result = {}
 	for key in dictionary:
 		result.update({key: 0})
@@ -61,9 +59,7 @@ def main():
 	results = results_container(dictionary)
 
 	messages = [
-		"Cucumber salad avocado has green color, apple and tomato are red. However, 1 is not equal to ..2 ?!",
-		"TOMATO IS RED, APPLE IS RED, LEMON IS YELLOW",
-		"AVOCADO, cucumber, SaLaD, tomato, apple,"
+		
 	]
 
 	classify_text(messages, dictionary, results)
