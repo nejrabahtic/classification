@@ -1,1 +1,1 @@
-# classification
+# Script for text classification 
