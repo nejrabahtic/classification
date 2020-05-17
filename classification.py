@@ -57,9 +57,8 @@ def main():
 
 	results = results_container(dictionary)
 
-	messages = [
-		
-	]
+	with open('messages.txt', 'r') as f:
+    		messages = f.readlines()
 
 	classify_text(messages, dictionary, results)
 
