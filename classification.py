@@ -7,10 +7,9 @@ classifier = []
 
 def create_dictionary():
 	dictionary = {
-		"asyncwait" : ["async", "await", "wait", "delay", "flaky", "flakiness"],
-		"concurreny" : ["concurrency", "flakiness", "flaky", "parallel", "execution"],
-		"testorder" : ["test", "order", "dependency", "flaky", "flakiness"],
-		"no decision" : []
+		"asyncwait" : ["async", "await", "wait", "delay", "flaky", "flakiness", "sleep", "threads", "synchronization"],
+		"concurreny" : ["concurrency", "flakiness", "flaky", "parallel", "execution", "waiting", "mapping", "block"],
+		"testorder" : ["test", "order", "dependency", "flaky", "flakiness", "dependency", "other", "test"]
 	}
 	return dictionary
 
