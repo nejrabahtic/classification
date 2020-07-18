@@ -1,0 +1,20 @@
+.body{
+    height: fit-content !important;
+}
+
+.jumbotron {
+    margin-bottom: 0 !important;
+}
+
+p{
+    margin: 25px !important;
+    text-align: center !important;
+    font-size: 1.8rem;
+    font-weight: 300;
+}
+
+.btn-block {
+    width: 25% !important;
+    margin-left: auto;
+    margin-right: auto;
+}
