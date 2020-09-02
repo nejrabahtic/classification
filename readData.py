@@ -1,3 +1,5 @@
+#!/usr/bin/env python3.6
+
 import re
 import operator
 
@@ -33,12 +35,19 @@ def find_matching_word_group(word, dictionary, results):
 		if word.lower() in dictionary[key]:
 			results[key] = results[key] + 1
 
+# Function for cleaning the words from different characters
+
+def clean_word(word):
+	result = word.replace(r"'", '') and word.replace(r'"', '')
+	return result
+
 # Function for splitting commit messages in the words and collecting results in classifier
 
 def find_matching_group(message, dictionary, results):
 	words = re.split("[, \-!?:]+", message)
 
 	for word in words:
+		word = clean_word(word)
 		find_matching_word_group(word, dictionary, results)
 
 	highest = max(results.items(), key=operator.itemgetter(1))
@@ -56,10 +65,7 @@ def convert(message):
 # Calling the main function for the classification process
 
 def classify_text(messages, dictionary, results):
-	print("CONV1", convert(messages))
 	for message in messages:
-		print("HAHAH", message)
-		print("CONV", convert(message))
 		find_matching_group(message, dictionary, results)
 
 # Printing result of the classification
@@ -77,7 +83,7 @@ def main():
 
 	results = results_container(dictionary)
 
-	with open('./rootClassification/static/messages.txt', 'r') as f:
+	with open('../Desktop/classification/rootClassification/static/messages.txt', 'r') as f:
     		messages = f.readlines()
 
 	classify_text(messages, dictionary, results)
