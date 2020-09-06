@@ -1,108 +1,137 @@
-#!/usr/bin/env python3.6
-
 from rootClassification import app
+from rootClassification import messages
+from rootClassification import dictionary
+
 from flask import render_template
-import re
+
 import operator
+import nltk
+nltk.download('punkt')
+
+from nltk.tokenize import sent_tokenize
+from nltk.tokenize import word_tokenize
+from nltk.stem import PorterStemmer
+
 
 @app.route('/')
 @app.route('/home')
 def homepage():
-   return render_template('mainPage.html')
+    return render_template('mainPage.html')
+
+
+@app.route('/messages')
+def importMessages():
+    # Be careful that the path is existing one and about the file name
+    # Messages are imported in the __init__.py as a global variable to use
+    return render_template('mainPage.html')
+
 
 @app.route('/dictionary')
-def dictionary():
-   def create_dictionary():
-      dictionary = {
-         "asyncwait" : ["async", "await", "wait", "delay", "flaky", "flakiness", "sleep", "threads", "synchronization"],
-         "concurrency" : ["concurrency", "flakiness", "flaky", "parallel", "execution", "waiting", "mapping", "block"],
-         "testorder" : ["test", "order", "dependency", "flaky", "flakiness", "dependency", "other", "test"]
-      }
-      return dictionary
-   return render_template('dictionary.html', arrays=create_dictionary(), arraysLen=len(create_dictionary()))
+def dictionary_view():
+    return render_template('dictionary.html', arrays=dictionary, arraysLen=len(dictionary))
+
 
 @app.route('/results')
 def loadAndClassify():
-   # The purpose of this script is to classify imported commit messages and show results of the process
+    # The purpose of this script is to classify imported commit messages and show results of the process
 
-   classifier = []
+    classifier = []
 
-   # The keywords dictionary used for the classification is created in the next function
+    # The keywords dictionary used for the classification is created in the next function
 
-   def create_dictionary():
-      dictionary = {
-         "asyncwait" : ["async", "await", "wait", "delay", "flaky", "flakiness", "sleep", "threads", "synchronization"],
-         "concurreny" : ["concurrency", "flakiness", "flaky", "parallel", "execution", "waiting", "mapping", "block"],
-         "testorder" : ["test", "order", "dependency", "flaky", "flakiness", "dependency", "other", "test"]
-      }
-      return dictionary
+    def preproccess_dictionary():
+        # stemming the dictionarys word to the root words
+        cleaned_words = []
+        for key in dictionary:
+            ps = PorterStemmer()
+            for word in dictionary[key]:
+                new_word = ps.stem(word)
+                cleaned_words.append(new_word)
+            dictionary[key] = cleaned_words
+            cleaned_words = []
 
-   # Next function is used for converting the keywords dictionary to data type dictionary for easier usage
+        return dictionary
 
-   def results_container(dictionary):
-      results = {}
-      for key in dictionary:
-         results.update({key: 0})
-      return results
+    # Next function is used for converting the keywords dictionary to data type dictionary for easier usage
 
-   # Function for matching words from commit messages and dictionary
+    def results_container(dictionary):
+        results = {}
+        for key in dictionary:
+            results.update({key: 0})
+        return results
 
-   def find_matching_word_group(word, dictionary, results):
-      for key in dictionary:
-         if word.lower() in dictionary[key]:
-            results[key] = results[key] + 1
+    # Function for matching words from commit messages and dictionary
 
-   # Function for splitting commit messages in the words and collecting results in classifier
+    def find_matching_word_group(word, dictionary, results):
+        for key in dictionary:
+            if word.lower() in dictionary[key]:
+                results[key] = results[key] + 1
 
-   def find_matching_group(message, dictionary, results):
-      print("MESSAGE", message)
-      words = message.split('[, \-!?:]+')
+    # Function for preprocessing of one commit message
 
-      for word in words:
-         find_matching_word_group(word, dictionary, results)
+    def preprocessing_fun(message):
+        print("MESSAGE", sent_tokenize(message))
+        # tokenizing of the message
+        words = word_tokenize(message)
 
-      highest = max(results.items(), key=operator.itemgetter(1))
+        # preparing the stemming
+        ps = PorterStemmer()
 
-      classifier.append(highest)
+        root_words = []
 
-      for key in results:
-         results[key] = 0
+        for word in words:
+            root_word = ps.stem(word)
+            root_words.append(root_word)
 
-   # Calling the main function for the classification process
+        print("WORDS", root_words)
 
-   def classify_text(messages, dictionary, results):
-      print("MESSAGES", messages)
-      for message in messages:
-         print("FUCKING MESSAGE", message)
-         find_matching_group(message, dictionary, results)
+        return root_words
 
-   # Printing result of the classification
+    # Function for splitting commit messages in the words and collecting results in classifier
 
-   def print_message_classifier(messages, classifier):
-      count = 0
-      while count < len(messages):
-         print(messages[count], classifier[count], "\n")
-         count += 1
+    def find_matching_group(message, dictionary, results):
+        words = preprocessing_fun(message)
 
-   # Main function 
+        for word in words:
+            find_matching_word_group(word, dictionary, results)
 
-   def main():
-      dictionary = create_dictionary()
+        highest = max(results.items(), key=operator.itemgetter(1))
 
-      results = results_container(dictionary)
+        classifier.append(highest)
 
-      with open('/home/nejra/Desktop/teza/classification/rootClassification/static/messages.txt', 'r') as f:
-            messages = f.readlines()
+        for key in results:
+            results[key] = 0
 
-      classify_text(messages, dictionary, results)
+    # Calling the main function for the classification process
 
-      print_message_classifier(messages, classifier)
-      print("FCK CLASSIFIER", classifier)
-   #dictionary = create_dictionary()
-   #results = results_container(dictionary)
-   #with open('/home/nejra/Desktop/teza/classification/rootClassification/static/messages.txt', 'r') as f:
-    #  messages = f.readlines()
-   #classifier = classify_text(messages, dictionary, results)
-   main();
-   print("NNJNJ")
-   return render_template('results.html', arrays=create_dictionary(), arraysLen=len(create_dictionary()))
+    def classify_text(messages, dictionary, results):
+        print("MESSAGES", messages)
+        for message in messages:
+            find_matching_group(message, dictionary, results)
+
+    # Printing result of the classification
+
+    def print_message_classifier(messages, classifier):
+        count = 0
+        while count < len(messages):
+            print(messages[count], classifier[count], "\n")
+            count += 1
+
+    # Main function
+
+    def main():
+        dictionary = preproccess_dictionary()
+
+        results = results_container(dictionary)
+
+        classify_text(messages, dictionary, results)
+
+        print_message_classifier(messages, classifier)
+
+    main()
+
+    return render_template('results.html',
+                           messages=messages,
+                           classifier=classifier,
+                           messages_len=len(dictionary),
+                           count=0)
