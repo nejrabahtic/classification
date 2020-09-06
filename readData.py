@@ -99,7 +99,7 @@ def print_message_classifier(messages, classifier):
         print(messages[count], classifier[count], "\n")
         count += 1
 
-# Main function 
+# Main function
 
 def main():
     dictionary = create_dictionary()
@@ -113,7 +113,7 @@ def main():
 
     print_message_classifier(messages, classifier)
 
-#Global main 
+#Global main
 
 if __name__ == '__main__':
     main()
