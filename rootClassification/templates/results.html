@@ -14,12 +14,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
 </head>
-<!--
-    count = 0
-        while count < len(messages):
-            print(messages[count], classifier[count], "\n")
-            count += 1
--->
 
 <body>
     <div class="h-100 mt-5">
@@ -29,9 +23,9 @@
             </div>
         </div>
         <div class="mt-5">
-            {% for i in range(0, messages_len)%} {% for value in classifier %}
-            <h1>{{messages[i]}}: {{value[i]}}</h1>
-            {% endfor %} {% endfor %}
+            {% for i in range(0, messages_len)%}
+            <h1>{{messages[i]}}</h1>
+            {% endfor %}
         </div>
     </div>
 </body>
