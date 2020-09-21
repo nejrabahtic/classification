@@ -2,7 +2,7 @@ from flask import Flask
 
 app = Flask(__name__)
 
-with open('/messages.txt', 'r') as f:
+with open('/home/nejrabahtic/Desktop/classification/rootClassification/static/messages.txt', 'r') as f:
     messages = f.readlines()
 
 dictionary = {

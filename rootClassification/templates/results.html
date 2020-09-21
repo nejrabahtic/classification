@@ -23,9 +23,9 @@
             </div>
         </div>
         <div class="mt-5">
-            {% for i in range(0, messages_len)%}
-            <h1>{{messages[i]}}</h1>
-            {% endfor %}
+            {%for i in range(0, messages_len, 1)%}
+            <h1>{{messages[i], classifier[i]}}</h1>
+            {%endfor%}
         </div>
     </div>
 </body>

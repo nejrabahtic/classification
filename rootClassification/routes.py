@@ -133,5 +133,5 @@ def loadAndClassify():
     return render_template('results.html',
                            messages=messages,
                            classifier=classifier,
-                           messages_len=len(dictionary),
+                           messages_len=len(messages),
                            count=0)

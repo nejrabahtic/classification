@@ -1,0 +1,5 @@
+"Waiting too long for other test to execute. Need to debug to see what is causing this dependency",
+"A bunch of async wait calls. However, my changes are not related to that. But still need to look into this issue, because it broke CI pipe",
+"CI loop is broken because test are not being  executed as wanted. Probably they are dependant on each other and not performed in order",
+"Extending time for waiting on the async response, because it failed too early and broke CI loop."
+"Network tests are breaking after my changes related to adding new firewall rule, although they are not linked with the tests. I assume it might be limitaion of time for response. Maybe syncronization or fault related to that."
